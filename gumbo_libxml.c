@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "gumbo.h"
+#include "libxml/HTMLtree.h"
 #include "libxml/tree.h"
 
 // Namespace constants, indexed by GumboNamespaceEnum.
@@ -28,7 +29,7 @@ static const char* kLegalXmlns[] = {
 };
 
 static xmlNodePtr convert_node(
-    xmlDocPtr doc, GumboNode* node, bool attach_original) {
+  xmlDocPtr doc, GumboNode* node) {
   xmlNodePtr result;
   switch (node->type) {
     case GUMBO_NODE_DOCUMENT:
@@ -70,7 +71,7 @@ static xmlNodePtr convert_node(
         // Children.
         for (int i = 0; i < elem->children.length; ++i) {
           xmlAddChild(result, convert_node(
-              doc, elem->children.data[i], attach_original));
+              doc, elem->children.data[i]));
         }
       }
       break;
@@ -93,22 +94,14 @@ static xmlNodePtr convert_node(
     default:
       assert(false && "unknown node type");
   }
-  if (attach_original) {
-    result->_private = node;
-  }
   return result;
 }
 
 xmlDocPtr gumbo_libxml_parse_with_options(
-    GumboOptions* options, const char* buffer, size_t buffer_length) {
-  xmlDocPtr doc = xmlNewDoc(BAD_CAST "1.0");
+  GumboOptions* options, const char* buffer, size_t buffer_length) {
   GumboOutput* output = gumbo_parse_with_options(options, buffer, buffer_length);
   GumboDocument* doctype = & output->document->v.document;
-  xmlCreateIntSubset(
-      doc,
-      BAD_CAST doctype->name,
-      BAD_CAST doctype->public_identifier,
-      BAD_CAST doctype->system_identifier);
+  xmlDocPtr doc = htmlNewDoc((const xmlChar*)doctype->system_identifier, (const xmlChar*)doctype->public_identifier);
 
   GumboVector* children = &output->document->v.element.children;
   for (unsigned int i = 0; i < children->length; i++) {
@@ -119,7 +112,7 @@ xmlDocPtr gumbo_libxml_parse_with_options(
         xmlAddChild((xmlNodePtr) doc, xmlNewDocComment(doc, BAD_CAST child->v.text.text));
         break;
       case GUMBO_NODE_ELEMENT:
-        xmlDocSetRootElement(doc, convert_node(doc, output->root, false));
+        xmlDocSetRootElement(doc, convert_node(doc, output->root));
         break;
       default:
         break;

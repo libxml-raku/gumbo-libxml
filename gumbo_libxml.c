@@ -44,7 +44,7 @@ static xmlNodePtr convert_node(
         // Tag name & namespace.
         xmlNsPtr namespace = NULL;
 
-        char *elementName = gumbo_normalized_tagname(elem->tag);
+        const char *elementName = gumbo_normalized_tagname(elem->tag);
         if (strlen(elementName) > 0) {
             result = xmlNewNode(NULL, BAD_CAST elementName);
         } else {
@@ -101,7 +101,7 @@ xmlDocPtr gumbo_libxml_parse_with_options(
   GumboOptions* options, const char* buffer, size_t buffer_length) {
   GumboOutput* output = gumbo_parse_with_options(options, buffer, buffer_length);
   GumboDocument* doctype = & output->document->v.document;
-  xmlDocPtr doc = htmlNewDoc((const xmlChar*)doctype->system_identifier, (const xmlChar*)doctype->public_identifier);
+  xmlDocPtr doc = htmlNewDoc(BAD_CAST doctype->system_identifier, BAD_CAST doctype->public_identifier);
 
   GumboVector* children = &output->document->v.element.children;
   for (unsigned int i = 0; i < children->length; i++) {

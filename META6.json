@@ -1,0 +1,29 @@
+{
+  "auth": "zef:dwarring",
+  "authors": [
+    "David Warring"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+    "Gumbo"
+  ],
+  "description": "Bindings to Gumbo, HTML 5 Parser, bindings for LibXML",
+  "license": "Apache",
+  "name": "Gumbo::LibXML",
+  "perl": "6.c",
+  "provides": {
+    "Gumbo::LibXML": "lib/Gumbo/LibXML.rakumod"
+  },
+  "resources": [
+    "libraries/gumbo_xml"
+  ],
+  "source-url": "git://github.com/libxml-raku/gumbo-libxml.git",
+  "tags": [
+    "html",
+    "parser"
+  ],
+  "test-depends": [
+  ],
+  "version": "0.0.1"
+}

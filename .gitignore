@@ -52,3 +52,8 @@ config.log
 config.status
 gumbo_libxml.pc
 libtool
+
+# Raku, emacs
+.precomp
+\#*\#
+*~

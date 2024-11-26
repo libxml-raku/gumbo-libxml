@@ -1,6 +1,7 @@
 #!/usr/bin/env raku
 class Build {
     method build($dir) {
+        temp $*CWD .= parent;
         unless "Makefile".IO.e {
             unless "configure".IO.e {
                 shell "./autogen.sh";
